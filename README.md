@@ -1,73 +1,35 @@
-# React + TypeScript + Vite
+# 英语音标闪卡乐园
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+面向初一学生的英语国际音标学习网页：翻面闪卡跟读 + 听音选卡闯关测验。
 
-Currently, two official plugins are available:
+**在线访问：<https://jossion12.github.io/english-ipa-flashcards/>**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 功能
 
-## React Compiler
+- **闪卡学习**：48 个国际音标翻转卡片，点卡翻面自动播放音标发音，背面可听例词发音；支持随机打乱
+- **闯关测验**：6 关听音选卡，每关 8 题，按错题数评 1-3 星，通关解锁下一关，进度保存在本地
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 技术
 
-## Expanding the ESLint configuration
+- Vite + React 19 + TypeScript + Tailwind CSS
+- chroma.js LCH 感知均匀配色
+- 全部音频内联为 data URI，构建产物为单个 `index.html`（离线双击即可打开）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 本地开发
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 构建与部署
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build   # 产物在 dist/，单文件 index.html
 ```
+
+推送到 `main` 分支后，GitHub Actions 自动构建并部署到 GitHub Pages。
+
+## 音频来源
+
+音标发音提取自《国际音标表》软件，例词录音来自 Antimoon（英音）及有道词典，仅供个人学习使用。
