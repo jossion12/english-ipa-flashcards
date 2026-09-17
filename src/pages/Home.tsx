@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Shuffle, RotateCcw, Volume2, GraduationCap, Home as HomeIcon, Play, Trophy, Star, ChevronRight, Repeat } from 'lucide-react'
+import { Shuffle, RotateCcw, Volume2, GraduationCap, Home as HomeIcon, Play, Trophy, Star, ChevronRight, Repeat, Sparkles } from 'lucide-react'
 import {
   GROUP_COLORS,
   SEMANTIC,
@@ -110,6 +110,9 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 const PROGRESS_KEY = 'ipa-flash-progress-v1'
+
+/** 隐藏奖励：全部 6 关三星通关后解锁的跳转地址 */
+const SECRET_REWARD_URL = 'https://4loavyfn74zuy.ok.kimi.link'
 
 interface Progress {
   stars: number[]
@@ -394,6 +397,14 @@ function Quiz() {
         <p className="mt-6 text-center text-xs" style={{ color: SEMANTIC.muted }}>
           每关 8 题 · 全对 3 颗星 · 错 1-2 题 2 颗星 · 通关解锁下一关
         </p>
+        {(() => {
+          const perfect = progress.stars.filter((s) => s === 3).length
+          return perfect < LEVELS.length ? (
+            <p className="mt-2 text-center text-xs" style={{ color: '#d97706' }}>
+              🎁 隐藏奖励：全部 {LEVELS.length} 关三星通关即可解锁（{perfect} / {LEVELS.length}）
+            </p>
+          ) : null
+        })()}
       </div>
     )
   }
@@ -403,6 +414,53 @@ function Quiz() {
     const stars = progress.stars[level]
     const titles = ['', '音标新秀 ⭐', '发音达人 🌟', '音标大师 🏆']
     const lastLevel = level >= LEVELS.length - 1
+    const allPerfect = progress.stars.length >= LEVELS.length && progress.stars.slice(0, LEVELS.length).every((s) => s === 3)
+
+    /* 隐藏奖励：全部关卡三星通关 */
+    if (allPerfect) {
+      return (
+        <div className="mx-auto max-w-lg text-center">
+          <style>{`
+            @keyframes reward-pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
+            @keyframes reward-glow { 0%, 100% { box-shadow: 0 0 24px 2px rgba(251,191,36,0.45); } 50% { box-shadow: 0 0 44px 10px rgba(251,191,36,0.75); } }
+          `}</style>
+          <div
+            className="rounded-3xl border-2 bg-white p-10"
+            style={{
+              borderColor: group.wash(SEMANTIC.star, 0.5),
+              animation: 'reward-pop 0.6s ease-out, reward-glow 2s ease-in-out 0.6s infinite',
+            }}
+          >
+            <div className="mb-2 text-6xl">🎁</div>
+            <h2 className="text-3xl font-black" style={{ color: SEMANTIC.ink }}>隐藏奖励解锁！</h2>
+            <p className="mt-2 text-lg font-bold" style={{ color: '#d97706' }}>🏆 全部 {LEVELS.length} 关 · 满分三星通关 🏆</p>
+            <div className="mt-3 flex justify-center gap-1">
+              {progress.stars.slice(0, LEVELS.length).map((_, i) => (
+                <Star key={i} className="h-7 w-7" style={{ color: SEMANTIC.star, fill: SEMANTIC.star }} />
+              ))}
+            </div>
+            <p className="mt-4 text-sm" style={{ color: SEMANTIC.muted }}>
+              18 / 18 颗星 · 你是真正的音标大师！点击下面按钮领取你的专属奖励 ✨
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Button
+                size="lg"
+                className="gap-2 text-base"
+                style={{ background: PLAY_BUTTON_BG, boxShadow: PLAY_BUTTON_SHADOW, color: '#fff' }}
+                onClick={() => { window.location.href = SECRET_REWARD_URL }}
+              >
+                <Sparkles className="h-5 w-5" />
+                领取隐藏奖励
+              </Button>
+              <Button variant="ghost" onClick={() => setScreen('menu')}>
+                返回选关
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="mx-auto max-w-lg text-center">
         <div
